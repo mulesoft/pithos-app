@@ -73,7 +73,7 @@ node {
       if (params.TAG == '') { // No tag specified
         branches = scm.branches
       } else {
-        braches = [[name: "refs/tags/${params.TAG}"]]
+        branches = [[name: "refs/tags/${params.TAG}"]]
       }
 
       checkout([
