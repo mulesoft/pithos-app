@@ -10,7 +10,7 @@ TELE ?= $(shell which tele)
 GRAVITY ?= $(shell which gravity)
 INTERMEDIATE_RUNTIME_VERSION ?=
 GRAVITY_VERSION ?= 7.0.30
-CLUSTER_SSL_APP_VERSION ?= 0.8.4
+CLUSTER_SSL_APP_VERSION ?= 0.8.5
 CLUSTER_SSL_APP_URL ?= https://github.com/gravitational/cluster-ssl-app/releases/download/${CLUSTER_SSL_APP_VERSION}/cluster-ssl-app-${CLUSTER_SSL_APP_VERSION}.tar.gz
 STATEDIR ?= state
 
