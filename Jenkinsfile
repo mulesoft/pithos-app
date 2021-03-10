@@ -11,7 +11,7 @@ properties([
   disableConcurrentBuilds(),
   parameters([
     string(name: 'TAG',
-           defaultValue: env.BRANCH_NAME,
+           defaultValue: '',
            description: 'Git tag to build'),
     booleanParam(defaultValue: false,
            description: 'Run or skip robotest system wide tests.',
@@ -41,7 +41,7 @@ properties([
            defaultValue: '7.0.30',
            description: 'gravity/tele binaries version'),
     string(name: 'CLUSTER_SSL_APP_VERSION',
-           defaultValue: '0.8.4',
+           defaultValue: '0.8.5',
            description: 'cluster-ssl-app version'),
     string(name: 'INTERMEDIATE_RUNTIME_VERSION',
            defaultValue: '6.1.43',
@@ -56,10 +56,10 @@ properties([
                  defaultValue: false,
                  description: 'Appends "-${GRAVITY_VERSION}" to the tag to be published'),
     booleanParam(name: 'BUILD_GRAVITY_APP',
-                 defaultValue: false,
+                 defaultValue: true,
                  description: 'Generate a Gravity App tarball'),
     booleanParam(name: 'BUILD_CLUSTER_IMAGE',
-                 defaultValue: true,
+                 defaultValue: false,
                  description: 'Generate a Gravity Cluster Image(Self-sufficient tarball)'),
     ]),
 ])
@@ -67,9 +67,18 @@ properties([
 node {
   workspace {
     stage('checkout') {
+      print 'Running stage Checkout source'
+
+      def branches
+      if (params.TAG == '') { // No tag specified
+        branches = scm.branches
+      } else {
+        branches = [[name: "refs/tags/${params.TAG}"]]
+      }
+
       checkout([
         $class: 'GitSCM',
-        branches: [[name: "${params.TAG}"]],
+        branches: branches,
         doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
         extensions: [[$class: 'CloneOption', noTags: false, shallow: false]],
         submoduleCfg: [],
