@@ -4,12 +4,14 @@ metadata:
   name: pithos-initialize
   namespace: default
 spec:
+  backoffLimit: 10
   template:
     metadata:
       name: pithos-initialize
     spec:
       securityContext:
         runAsUser: 0
+      restartPolicy: OnFailure
       containers:
         - image: cassandra:latest
           name: pithos-initialize
