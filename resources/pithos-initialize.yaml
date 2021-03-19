@@ -5,8 +5,6 @@ metadata:
   namespace: default
 spec:
   backoffLimit: 10
-  parallelism: 1
-  completions: 1
   template:
     metadata:
       name: pithos-initialize
