@@ -179,7 +179,7 @@ spec:
                   - nodetool drain
           env:
             - name: MAX_HEAP_SIZE
-              value: 2048M
+              value: 4096M
             - name: CASSANDRA_SEEDS
               value: "cassandra-0.cassandra.default.svc.cluster.local"
             - name: CASSANDRA_CLUSTER_NAME
@@ -222,6 +222,13 @@ spec:
               mountPath: /etc/ssl/cluster-default
             - name: cassandra-ssl
               mountPath: /etc/ssl/cassandra
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "6Gi"
+              cpu: "2"
         - image: cassandra:latest
           name: cassandra-utils
           command: ["/usr/bin/dumb-init", "/usr/sbin/start-utils.sh"]
@@ -233,6 +240,13 @@ spec:
             capabilities:
               add:
                 - IPC_LOCK
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
         - image: cassandra:latest
           name: cassandra-metrics
           command: ["/usr/bin/dumb-init", "/usr/sbin/start-telegraf.sh"]
@@ -240,6 +254,13 @@ spec:
           ports:
             - containerPort: 9273
               name: metrics
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
       volumes:
         - name: config
           configMap:
