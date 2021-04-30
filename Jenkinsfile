@@ -61,6 +61,15 @@ properties([
     booleanParam(name: 'BUILD_CLUSTER_IMAGE',
                  defaultValue: false,
                  description: 'Generate a Gravity Cluster Image(Self-sufficient tarball)'),
+    string(name: 'S3_UPLOAD_PATH',
+           defaultValue: '',
+           description: 'S3 bucket and path to upload built application image. For example "builds.example.com/cluster-ssl-app".'),
+    booleanParam(name: 'PUBLISH_APP_PACKAGE',
+                 defaultValue: false,
+                 description: 'Import application to S3 bucket'),
+    string(name: "AWS_CREDENTIALS",
+           defaultValue: '',
+           description: 'Name of the AWS credentials to use'),
     ]),
 ])
 
@@ -111,7 +120,7 @@ node {
 
     stage('populate state directory with gravity and cluster-ssl packages') {
       withEnv(MAKE_ENV + ["BINARIES_DIR=${BINARIES_DIR}"]) {
-        sh 'make install-dependent-packages'
+        sh 'tele logout && make install-dependent-packages'
       }
     }
 
@@ -129,10 +138,21 @@ node {
       if (params.BUILD_GRAVITY_APP) {
         withEnv(MAKE_ENV) {
           sh 'make export'
-          archiveArtifacts "build/application.tar"
         }
       } else {
         echo 'skipped build of gravity application'
+      }
+    }
+
+    stage('upload application tarball to S3') {
+      if (isProtectedBranch(env.TAG) && params.PUBLISH_APP_PACKAGE) {
+        withCredentials([usernamePassword(credentialsId: "${AWS_CREDENTIALS}", usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+          def packageName = "gravitational.io/pithos"
+          def S3_URL = "s3://${S3_UPLOAD_PATH}/${packageName}:${APP_VERSION}.tar"
+          withEnv(MAKE_ENV + ["S3_URL=${S3_URL}"]) {
+            sh 'aws s3 cp --only-show-errors build/application.tar ${S3_URL}'
+          }
+        }
       }
     }
 
@@ -160,6 +180,27 @@ node {
       }
     }
   }
+}
+
+def isProtectedBranch(branchOrTagName) {
+  // check if tag or branch empty
+  if (!branchOrTagName?.trim()) {
+    return false
+  }
+
+  String[] protectedBranches = ['master', 'support/.*']
+
+  protectedBranches.each { protectedBranch ->
+    if (branchOrTagName == "${protectedBranch}") {
+      return true;
+    }
+    def status = sh(script: "git branch --all --contains=${branchOrTagName} | grep '[*[:space:]]*remotes/origin/${protectedBranch}\$'", returnStatus: true)
+    echo status
+    if (status == 0) {
+      return true
+    }
+  }
+  return false
 }
 
 void workspace(Closure body) {
