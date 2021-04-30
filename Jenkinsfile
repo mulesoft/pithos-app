@@ -192,7 +192,6 @@ def isProtectedBranch(branchOrTagName) {
     def status = sh(script: "git branch --all --contains=${branchOrTagName} | grep '[*[:space:]]*remotes/origin/${protectedBranch}\$'", returnStatus: true)
     return status == 0
   }
-  return false
 }
 
 void workspace(Closure body) {
