@@ -147,8 +147,7 @@ node {
     stage('upload application tarball to S3') {
       if (isProtectedBranch(env.TAG) && params.PUBLISH_APP_PACKAGE) {
         withCredentials([usernamePassword(credentialsId: "${AWS_CREDENTIALS}", usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-          def packageName = "gravitational.io/pithos"
-          def S3_URL = "s3://${S3_UPLOAD_PATH}/${packageName}:${APP_VERSION}.tar"
+          def S3_URL = "s3://${S3_UPLOAD_PATH}/pithos:${APP_VERSION}.tar"
           withEnv(MAKE_ENV + ["S3_URL=${S3_URL}"]) {
             sh 'aws s3 cp --only-show-errors build/application.tar ${S3_URL}'
           }
@@ -189,16 +188,22 @@ def isProtectedBranch(branchOrTagName) {
   }
 
   String[] protectedBranches = ['master', 'support/.*']
+  def match = false
 
-  protectedBranches.each { protectedBranch ->
+  protectedBranches.any { protectedBranch ->
     if (branchOrTagName == "${protectedBranch}") {
-      return true;
-    }
-    def status = sh(script: "git branch --all --contains=${branchOrTagName} | grep '[*[:space:]]*remotes/origin/${protectedBranch}\$'", returnStatus: true)
-    echo status
-    if (status == 0) {
+      match = true
       return true
     }
+    def status = sh(script: "git branch --all --contains=${branchOrTagName} | grep '[*[:space:]]*remotes/origin/${protectedBranch}\$'", returnStatus: true)
+    if (status == 0) {
+      match = true
+      return true
+    }
+  }
+
+  if (match) {
+    return true
   }
   return false
 }
