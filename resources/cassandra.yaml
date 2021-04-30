@@ -227,7 +227,8 @@ spec:
               memory: "2Gi"
               cpu: "1"
             limits:
-              memory: "6Gi"
+              # Limit is higher than MAX_HEAP_SIZE to have room for off-heap mamory
+              memory: "4608Mi"
               cpu: "2"
         - image: cassandra:latest
           name: cassandra-utils
@@ -242,10 +243,10 @@ spec:
                 - IPC_LOCK
           resources:
             requests:
-              memory: "128Mi"
+              memory: "64Mi"
               cpu: "100m"
             limits:
-              memory: "256Mi"
+              memory: "128Mi"
               cpu: "250m"
         - image: cassandra:latest
           name: cassandra-metrics
@@ -256,10 +257,10 @@ spec:
               name: metrics
           resources:
             requests:
-              memory: "128Mi"
+              memory: "64Mi"
               cpu: "100m"
             limits:
-              memory: "256Mi"
+              memory: "128Mi"
               cpu: "250m"
       volumes:
         - name: config
