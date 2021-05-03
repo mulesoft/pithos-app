@@ -172,7 +172,7 @@ spec:
             memory: "512Mi"
             cpu: "500m"
           limits:
-            memory: "2Gi"
+            memory: "1536Mi"
             cpu: "2"
       - image: pithos-proxy:latest
         name: proxy
