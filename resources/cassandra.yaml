@@ -226,10 +226,6 @@ spec:
             requests:
               memory: "2Gi"
               cpu: "1"
-            limits:
-              # Limit is higher than MAX_HEAP_SIZE to have room for off-heap mamory
-              memory: "4608Mi"
-              cpu: "2"
         - image: cassandra:latest
           name: cassandra-utils
           command: ["/usr/bin/dumb-init", "/usr/sbin/start-utils.sh"]
@@ -246,8 +242,8 @@ spec:
               memory: "64Mi"
               cpu: "100m"
             limits:
-              memory: "128Mi"
-              cpu: "250m"
+              memory: "256Mi"
+              cpu: "500m"
         - image: cassandra:latest
           name: cassandra-metrics
           command: ["/usr/bin/dumb-init", "/usr/sbin/start-telegraf.sh"]
@@ -260,8 +256,8 @@ spec:
               memory: "64Mi"
               cpu: "100m"
             limits:
-              memory: "128Mi"
-              cpu: "250m"
+              memory: "256Mi"
+              cpu: "500m"
       volumes:
         - name: config
           configMap:
