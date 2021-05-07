@@ -222,10 +222,6 @@ spec:
               mountPath: /etc/ssl/cluster-default
             - name: cassandra-ssl
               mountPath: /etc/ssl/cassandra
-          resources:
-            requests:
-              memory: "2Gi"
-              cpu: "1"
         - image: cassandra:latest
           name: cassandra-utils
           command: ["/usr/bin/dumb-init", "/usr/sbin/start-utils.sh"]
