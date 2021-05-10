@@ -17,13 +17,13 @@
 
 package io.k8s.cassandra;
 
-import io.kubernetes.client.ApiClient;
-import io.kubernetes.client.ApiException;
-import io.kubernetes.client.Configuration;
-import io.kubernetes.client.apis.CoreV1Api;
-import io.kubernetes.client.models.V1Endpoints;
-import io.kubernetes.client.models.V1EndpointAddress;
-import io.kubernetes.client.models.V1EndpointSubset;
+import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.Configuration;
+import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.openapi.models.V1Endpoints;
+import io.kubernetes.client.openapi.models.V1EndpointAddress;
+import io.kubernetes.client.openapi.models.V1EndpointSubset;
 import io.kubernetes.client.util.Config;
 
 import java.io.IOException;
@@ -34,12 +34,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.cassandra.locator.SeedProvider;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jna.Native;
 
 /**
  * Self discovery {@link SeedProvider} that creates a list of Cassandra Seeds by
@@ -52,6 +48,7 @@ import com.sun.jna.Native;
  * <li>CASSANDRA_SERVICE_NUM_SEEDS defaults to 8 seeds</li>
  * </ul>
  */
+
 public class KubernetesSeedProvider implements SeedProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(KubernetesSeedProvider.class);
