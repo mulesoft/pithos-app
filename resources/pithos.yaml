@@ -163,6 +163,13 @@ spec:
           # https://github.com/gravitational/pithos-app/blob/master/resources/pithos-cfg/config.yaml.template#L118
           # read-timeout-millis: 30000
           timeoutSeconds: 32
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1536Mi"
+            cpu: "2"
       - image: pithos-proxy:latest
         name: proxy
         securityContext:
@@ -193,6 +200,13 @@ spec:
         volumeMounts:
           - name: cluster-default-ssl
             mountPath: /etc/cluster-ssl
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
       - image: pithosctl:latest
         name: healthz
         command: ["/usr/bin/dumb-init", "--"]
@@ -208,6 +222,13 @@ spec:
               secretKeyRef:
                 name: pithos-keys
                 key: master.secret
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
       volumes:
         - name: pithos-cfg
           configMap:

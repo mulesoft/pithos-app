@@ -41,7 +41,7 @@ properties([
            defaultValue: '5.5.56',
            description: 'gravity/tele binaries version'),
     string(name: 'CLUSTER_SSL_APP_VERSION',
-           defaultValue: '0.8.5',
+           defaultValue: '0.8.7',
            description: 'cluster-ssl-app version'),
     string(name: 'INTERMEDIATE_RUNTIME_VERSION',
            defaultValue: '',

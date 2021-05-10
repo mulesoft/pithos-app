@@ -178,7 +178,7 @@ spec:
                   - nodetool drain
           env:
             - name: MAX_HEAP_SIZE
-              value: 2048M
+              value: 4096M
             - name: CASSANDRA_SEEDS
               value: "cassandra-0.cassandra.default.svc.cluster.local"
             - name: CASSANDRA_CLUSTER_NAME
@@ -242,6 +242,13 @@ spec:
             capabilities:
               add:
                 - IPC_LOCK
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
         - image: cassandra:latest
           name: cassandra-metrics
           command: ["/usr/bin/dumb-init", "/usr/sbin/start-telegraf.sh"]
@@ -257,6 +264,13 @@ spec:
                 secretKeyRef:
                   name: telegraf-influxdb-creds
                   key: password
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
       volumes:
         - name: config
           configMap:
